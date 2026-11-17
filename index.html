@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#1e293b">
+<meta name="description" content="نظام شامل لإدارة البطولات الرياضية - 9 رياضات + معايير دولية رسمية">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="بطولاتي">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="application-name" content="بطولاتي">
+<title>نظام إدارة البطولات الاحترافي</title>
+
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxOTIgMTkyIj48cmVjdCB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgZmlsbD0iIzFlMjkzYiIgcng9IjMyIi8+PHRleHQgeD0iOTYiIHk9IjEyMCIgZm9udC1zaXplPSI5MCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+8J+PhjwvdGV4dD48L3N2Zz4=">
+<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxOTIgMTkyIj48cmVjdCB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgZmlsbD0iIzFlMjkzYiIgcng9IjMyIi8+PHRleHQgeD0iOTYiIHk9IjEyMCIgZm9udC1zaXplPSI5MCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+8J+PhjwvdGV4dD48L3N2Zz4=">
+
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="app-header">
+    <div class="header-top">
+        <h1>🏆 نظام إدارة البطولات</h1>
+        <div class="header-actions">
+            <button id="soundToggle" class="header-icon-btn" title="تفعيل الأصوات" onclick="Sounds.toggle()">
+                <span class="sound-icon">🔊</span>
+            </button>
+            <button id="themeToggle" class="header-icon-btn theme-toggle" onclick="Theme.toggle()" title="تبديل الوضع الليلي">
+                <span class="theme-icon">🌙</span>
+            </button>
+        </div>
+    </div>
+    <p class="subtitle">خروج المغلوب • دوري المجموعات • النظام الهجين</p>
+    <div class="tournament-name-banner">
+        <span class="banner-label">اسم البطولة:</span>
+        <input type="text" id="tournamentName" placeholder="أدخل اسم البطولة..." maxlength="80">
+    </div>
+</header>
+
+<nav class="system-tabs">
+    <button class="tab active" data-system="knockout">🎯 خروج المغلوب</button>
+    <button class="tab" data-system="groups">🔄 دوري المجموعات</button>
+    <button class="tab" data-system="hybrid">🏆 هجين</button>
+</nav>
+
+<main class="container">
+
+    <div id="modeBanner" class="mode-banner"></div>
+
+    <!-- ======== قسم اللاعبين ======== -->
+    <section id="playersSection" class="section">
+        <h2>👥 إدارة اللاعبين</h2>
+        <form id="playerForm" class="player-form">
+            <input type="text" id="playerName" placeholder="اسم اللاعب" required>
+            <input type="text" id="team" placeholder="اسم الفريق" required>
+            <label class="checkbox-label">
+                <input type="checkbox" id="isSeeded">
+                <span>مصنف ⭐</span>
+            </label>
+            <div class="seed-rank-wrapper">
+                <label for="seedRank">الترتيب:</label>
+                <input type="number" id="seedRank" min="1" max="64" class="seed-rank-input" disabled>
+            </div>
+            <button type="submit" class="btn btn-primary">➕ إضافة</button>
+        </form>
+        <div class="players-summary" id="playersSummary"></div>
+        <div class="table-wrapper">
+            <table class="player-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>اللاعب</th>
+                        <th>الفريق</th>
+                        <th>التصنيف</th>
+                        <th>الترتيب</th>
+                        <th>إجراءات</th>
+                    </tr>
+                </thead>
+                <tbody id="playersList"></tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- ======== قسم المجموعات ======== -->
+    <section id="groupsSection" class="section" hidden>
+        <h2>🔄 إدارة المجموعات</h2>
+        <form id="groupForm" class="group-form">
+            <input type="text" id="groupName" placeholder="اسم المجموعة (مثل: A)" required>
+            <input type="text" id="teamNames" placeholder="أسماء الفرق مفصولة بفواصل: فريق1, فريق2, فريق3" required>
+            
+            <!-- ⭐ اختيار نوع الدوري -->
+            <div class="leg-selector">
+                <label class="leg-option">
+                    <input type="radio" name="groupLegs" value="1" checked>
+                    <span>➡️ دور واحد</span>
+                </label>
+                <label class="leg-option">
+                    <input type="radio" name="groupLegs" value="2">
+                    <span>🔄 دورين (ذهاب وإياب)</span>
+                </label>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">➕ إضافة مجموعة</button>
+        </form>
+        <label class="checkbox-label">
+            <input type="checkbox" id="directEncounterToggle">
+            <span>تطبيق نظام المواجهات المباشرة عند التعادل</span>
+        </label>
+        <div class="groups-summary" id="groupsSummary"></div>
+    </section>
+
+    <!-- ======== قسم التحكم ======== -->
+    <section class="section">
+        <h2>⚙️ التحكم بالبطولة</h2>
+
+        <div class="game-type-selector">
+            <label for="gameType">
+                <span>🎮 نوع اللعبة:</span>
+            </label>
+            <select id="gameType">
+                <option value="football11">⚽ كرة قدم 11</option>
+                <option value="futsal">🥅 كرة قدم خماسي</option>
+                <option value="basketball">🏀 كرة سلة</option>
+                <option value="volleyball">🏐 كرة طائرة</option>
+                <option value="handball">🤾 كرة يد</option>
+                <option value="tennis">🎾 تنس أرضي</option>
+                <option value="tableTennis">🏓 تنس طاولة</option>
+                <option value="squash">🎾 أسكواش</option>
+                <option value="padel">🎾 بادل تنس</option>
+            </select>
+        </div>
+
+        <label id="thirdPlaceToggleWrap" class="checkbox-label third-place-toggle">
+            <input type="checkbox" id="enableThirdPlace" checked>
+            <span>🥉 تفعيل مباراة تحديد المركز الثالث والرابع</span>
+        </label>
+
+        <div id="bridgeSettings" class="bridge-settings" hidden>
+            <label>
+                <span>عدد المتأهلين من كل مجموعة:</span>
+                <input type="number" id="qualifiersPerGroup" min="1" max="4" value="2">
+            </label>
+        </div>
+
+        <div class="controls">
+            <button class="btn btn-primary" onclick="App.current.draw()">🎲 إجراء القرعة</button>
+            <button class="btn btn-gold" onclick="App.current.saveTournamentAs()">💾 حفظ البطولة</button>
+            <button class="btn btn-secondary" onclick="App.current.exportData()">📤 تصدير JSON</button>
+            <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">📥 استيراد JSON</button>
+            <input type="file" id="importFile" accept=".json" hidden>
+            <button class="btn btn-info" onclick="exportToWord()">📄 تصدير Word</button>
+            <button class="btn btn-excel" onclick="Export.toExcel()">📊 تصدير Excel</button>
+            <button class="btn btn-pdf" onclick="Export.toPDF()">📕 تصدير PDF</button>
+            <button class="btn btn-info" onclick="ScoreSheet.showTournamentReport()">📊 تقرير الهدافين</button>
+            <button class="btn btn-view" onclick="Bracket.open()">🌳 عرض الشجرة</button>
+            <button class="btn btn-dashboard" onclick="Dashboard.open()">📈 لوحة الإحصائيات</button>
+            <button class="btn btn-share" onclick="Export.share()">🔗 مشاركة</button>
+            <button class="btn btn-danger" onclick="App.current.newTournament()">🔄 بطولة جديدة</button>
+            <button class="btn btn-secondary" onclick="window.print()">🖨️ طباعة</button>
+        </div>
+    </section>
+
+    <!-- ======== شريط الجسر ======== -->
+    <div id="bridgeBanner" class="bridge-banner" hidden>
+        <div class="bridge-icon">🌉</div>
+        <div class="bridge-text">
+            <h3>🎉 اكتمل دور المجموعات!</h3>
+            <p id="bridgeInfo"></p>
+        </div>
+        <button class="btn btn-gold bridge-btn" onclick="App.bridge.transfer()">
+            🚀 الانتقال إلى الأدوار الإقصائية
+        </button>
+    </div>
+
+    <!-- ======== جدول البطولة ======== -->
+    <section class="section">
+        <h2 id="displayTitle">📊 جدول البطولة</h2>
+        <div id="tournamentRounds"></div>
+        <div id="groupsContainer"></div>
+    </section>
+
+    <!-- ======== البطولات المحفوظة ======== -->
+    <section class="section">
+        <h2>📚 البطولات المحفوظة</h2>
+        <div id="savedTournamentsList" class="saved-tournaments-list"></div>
+    </section>
+
+</main>
+
+<!-- ======== نافذة الفائز / منصة التتويج ======== -->
+<div id="winnerOverlay" class="winner-overlay">
+    <div class="winner-card">
+        <div class="trophy-emoji">🏆</div>
+        <h2 id="winnerCardTitle">منصة التتويج</h2>
+        <div class="winner-details" id="winnerDetails"></div>
+        <button class="btn btn-primary" onclick="App.ui.closeWinner()">إغلاق</button>
+    </div>
+</div>
+
+<!-- ======== نافذة تعديل اللاعب ======== -->
+<div id="editOverlay" class="winner-overlay">
+    <div class="winner-card">
+        <h2>تعديل بيانات اللاعب</h2>
+        <div class="edit-form">
+            <input type="text" id="editName" placeholder="اسم اللاعب">
+            <input type="text" id="editTeam" placeholder="الفريق">
+            <label class="checkbox-label">
+                <input type="checkbox" id="editSeeded">
+                <span>مصنف ⭐</span>
+            </label>
+            <input type="number" id="editSeedRank" min="1" max="64" class="seed-rank-input" disabled>
+            <input type="hidden" id="editId">
+            <div class="edit-actions">
+                <button class="btn btn-primary" onclick="App.knockout.saveEdit()">حفظ</button>
+                <button class="btn btn-danger" onclick="App.ui.closeEdit()">إلغاء</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ======== نافذة Score Sheet ======== -->
+<div id="scoreSheetOverlay" class="score-sheet-overlay">
+    <div class="score-sheet-modal">
+        <div class="score-sheet-header">
+            <h2 id="scoreSheetTitle">📋 Score Sheet</h2>
+            <div class="header-controls">
+                <button class="header-icon-btn" onclick="ScoreSheet.printScoreSheet()" title="طباعة">🖨️</button>
+                <button class="close-btn" onclick="ScoreSheet.close()">✕</button>
+            </div>
+        </div>
+        <div class="score-sheet-body" id="scoreSheetBody"></div>
+        <div class="score-sheet-footer">
+            <button class="btn btn-danger" onclick="ScoreSheet.close()">إلغاء</button>
+            <button class="btn btn-primary" onclick="ScoreSheet.save()">💾 حفظ</button>
+        </div>
+    </div>
+</div>
+
+<!-- ======== نافذة تقرير الهدافين ======== -->
+<div id="reportOverlay" class="score-sheet-overlay">
+    <div class="score-sheet-modal report-modal">
+        <div class="score-sheet-header">
+            <h2 id="reportTitle">📊 تقرير هدافي البطولة</h2>
+            <div class="header-controls">
+                <button class="header-icon-btn" onclick="Export.reportToExcel()" title="تصدير Excel">📊</button>
+                <button class="close-btn" onclick="ScoreSheet.closeReport()">✕</button>
+            </div>
+        </div>
+        <div class="score-sheet-body" id="reportBody"></div>
+        <div class="score-sheet-footer">
+            <button class="btn btn-info" onclick="ScoreSheet.printReport()">🖨️ طباعة</button>
+            <button class="btn btn-secondary" onclick="ScoreSheet.closeReport()">إغلاق</button>
+        </div>
+    </div>
+</div>
+
+<!-- ======== نافذة Bracket Tree ======== -->
+<div id="bracketOverlay" class="score-sheet-overlay bracket-overlay">
+    <div class="score-sheet-modal bracket-modal">
+        <div class="score-sheet-header">
+            <h2 id="bracketTitle">🌳 شجرة البطولة</h2>
+            <div class="bracket-controls">
+                <button class="bracket-zoom-btn" onclick="Bracket.zoomOut()" title="تصغير">➖</button>
+                <button class="bracket-zoom-btn" onclick="Bracket.zoomReset()" title="إعادة">🔄</button>
+                <button class="bracket-zoom-btn" onclick="Bracket.zoomIn()" title="تكبير">➕</button>
+                <button class="bracket-zoom-btn" onclick="Bracket.print()" title="طباعة">🖨️</button>
+                <button class="close-btn" onclick="Bracket.close()">✕</button>
+            </div>
+        </div>
+        <div class="score-sheet-body bracket-body">
+            <div id="bracketContainer" class="bracket-container"></div>
+        </div>
+    </div>
+</div>
+
+<!-- ======== نافذة Dashboard ======== -->
+<div id="dashboardOverlay" class="score-sheet-overlay dashboard-overlay">
+    <div class="score-sheet-modal dashboard-modal">
+        <div class="score-sheet-header">
+            <h2 id="dashboardTitle">📈 لوحة الإحصائيات</h2>
+            <div class="header-controls">
+                <button class="header-icon-btn" onclick="Dashboard.exportCharts()" title="تصدير PNG">🖼️</button>
+                <button class="close-btn" onclick="Dashboard.close()">✕</button>
+            </div>
+        </div>
+        <div class="score-sheet-body dashboard-body">
+            <div id="dashboardContainer"></div>
+        </div>
+        <div class="score-sheet-footer">
+            <button class="btn btn-info" onclick="Dashboard.printReport()">🖨️ طباعة</button>
+            <button class="btn btn-secondary" onclick="Dashboard.close()">إغلاق</button>
+        </div>
+    </div>
+</div>
+
+<!-- ======== نافذة QR Share ======== -->
+<div id="shareOverlay" class="score-sheet-overlay">
+    <div class="score-sheet-modal" style="max-width: 500px;">
+        <div class="score-sheet-header">
+            <h2>🔗 مشاركة البطولة</h2>
+            <button class="close-btn" onclick="Export.closeShare()">✕</button>
+        </div>
+        <div class="score-sheet-body" id="shareBody" style="text-align: center;"></div>
+    </div>
+</div>
+
+<!-- ======== Toast Container ======== -->
+<div id="toastContainer" class="toast-container"></div>
+
+<!-- ============================================================
+     المكتبات الخارجية (CDN)
+     ============================================================ -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<!-- ============================================================
+     السكربتات الأساسية
+     ============================================================ -->
+<script src="theme.js"></script>
+<script src="sounds.js"></script>
+<script src="knockout.js"></script>
+<script src="groups.js"></script>
+<script src="bridge.js"></script>
+<script src="scoresheet.js"></script>
+<script src="advanced-rules.js"></script>
+<script src="bracket.js"></script>
+<script src="dashboard.js"></script>
+<script src="export.js"></script>
+<script src="app.js"></script>
+
+<!-- ============================================================
+     تسجيل Service Worker (PWA)
+     ============================================================ -->
+<script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./sw.js')
+                .then(reg => {
+                    console.log('[PWA] Service Worker registered');
+                    reg.addEventListener('updatefound', () => {
+                        const newWorker = reg.installing;
+                        newWorker.addEventListener('statechange', () => {
+                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                if (confirm('يتوفر تحديث جديد. هل تريد إعادة التحميل الآن؟')) {
+                                    newWorker.postMessage('SKIP_WAITING');
+                                    window.location.reload();
+                                }
+                            }
+                        });
+                    });
+                })
+                .catch(err => console.warn('[PWA] SW registration failed:', err));
+        });
+    }
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        window.__deferredInstallPrompt = e;
+        showInstallButton();
+    });
+
+    function showInstallButton() {
+        if (document.getElementById('installBtn')) return;
+        const btn = document.createElement('button');
+        btn.id = 'installBtn';
+        btn.className = 'install-prompt';
+        btn.innerHTML = '📲 تثبيت التطبيق';
+        btn.onclick = async () => {
+            if (window.__deferredInstallPrompt) {
+                window.__deferredInstallPrompt.prompt();
+                const { outcome } = await window.__deferredInstallPrompt.userChoice;
+                if (outcome === 'accepted') btn.remove();
+                window.__deferredInstallPrompt = null;
+            }
+        };
+        document.body.appendChild(btn);
+    }
+</script>
+
+</body>
+</html>

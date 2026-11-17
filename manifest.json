@@ -1,0 +1,42 @@
+{
+    "name": "نظام إدارة البطولات الاحترافي",
+    "short_name": "بطولاتي",
+    "description": "نظام شامل لإدارة البطولات الرياضية - 9 رياضات + 3 أنظمة",
+    "start_url": "./index.html",
+    "display": "standalone",
+    "orientation": "any",
+    "dir": "rtl",
+    "lang": "ar",
+    "background_color": "#1e293b",
+    "theme_color": "#1e293b",
+    "scope": "./",
+    "icons": [
+        {
+            "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxOTIgMTkyIj48cmVjdCB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgZmlsbD0iIzFlMjkzYiIgcng9IjMyIi8+PHRleHQgeD0iOTYiIHk9IjEyMCIgZm9udC1zaXplPSI5MCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+8J+PhjwvdGV4dD48L3N2Zz4=",
+            "sizes": "192x192",
+            "type": "image/svg+xml",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgZmlsbD0iIzFlMjkzYiIgcng9Ijg4Ii8+PHRleHQgeD0iMjU2IiB5PSIzMjAiIGZvbnQtc2l6ZT0iMjQwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7wn4+OPC90ZXh0Pjwvc3ZnPg==",
+            "sizes": "512x512",
+            "type": "image/svg+xml",
+            "purpose": "any maskable"
+        }
+    ],
+    "categories": ["sports", "productivity", "utilities"],
+    "shortcuts": [
+        {
+            "name": "بطولة جديدة",
+            "short_name": "جديدة",
+            "url": "./index.html?action=new",
+            "icons": []
+        },
+        {
+            "name": "لوحة الإحصائيات",
+            "short_name": "إحصائيات",
+            "url": "./index.html?action=dashboard",
+            "icons": []
+        }
+    ]
+}
